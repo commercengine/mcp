@@ -196,7 +196,9 @@ The connector can read orders, but cannot cancel, refund or edit them. It can
 find customers, but cannot edit them. Payment, store-setting, user and role
 changes belong in the admin app. Marketplace channels are set up in the admin app
 too, because they need the marketplace's API credentials, which never pass
-through a chat. Media tools upload existing files; they do not generate images.
+through a chat. The connector doesn't create images itself. If your AI app makes
+one, the connector can upload it from a public link or, in apps that can run
+commands such as Claude Code and Codex, from a file.
 
 ## Privacy, help and disconnecting
 
