@@ -1,0 +1,20 @@
+{
+  "name": "commerce-engine",
+  "version": "0.1.0",
+  "description": "Manage your Commerce Engine catalog, media, offers and marketplace, and read orders through your own account.",
+  "homepage": "https://www.commercengine.io",
+  "repository": "https://github.com/commercengine/mcp",
+  "license": "MIT",
+  "keywords": [
+    "commerce",
+    "ecommerce",
+    "catalog",
+    "marketplace",
+    "mcp"
+  ],
+  "author": {
+    "name": "Commerce Engine",
+    "email": "support@commercengine.io"
+  },
+  "logo": "assets/icon-512.png"
+}
