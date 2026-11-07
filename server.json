@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.commercengine/mcp",
+  "title": "Commerce Engine",
+  "description": "Manage Commerce Engine catalogs, media, offers and marketplaces, and read orders via OAuth.",
+  "version": "0.1.0",
+  "websiteUrl": "https://www.commercengine.io/docs/ai/mcp-connector",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/commercengine/mcp/main/assets/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.commercengine.io/mcp"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "commerce-engine",
+  "version": "0.1.0",
+  "description": "Manage your Commerce Engine catalog, media, offers and marketplace, and read orders through your own account.",
+  "author": {
+    "name": "Commerce Engine",
+    "email": "support@commercengine.io",
+    "url": "https://www.commercengine.io"
+  },
+  "homepage": "https://www.commercengine.io",
+  "repository": "https://github.com/commercengine/mcp",
+  "license": "MIT",
+  "keywords": ["commerce", "ecommerce", "catalog", "marketplace", "mcp"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Commerce Engine",
+        "shortDescription": "Manage your commerce store",
+        "longDescription": "Connect your AI app to Commerce Engine to work on your catalog, media, coupons, promotions, sales channels and marketplace, and search and read orders. Sign in with your own Commerce Engine admin account; access follows your existing role and stores. New connections start in Sandbox. Only you can approve a switch to Live in the admin app. Sales channels and marketplace sellers are organisation-wide and affect Live even in Sandbox. The connector cannot cancel, refund or edit orders, edit customers, change payments or user roles, or generate images. Review changes before approving them in your AI app.",
+        "developerName": "Commerce Engine",
+        "category": "Business & Operations",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://www.commercengine.io",
+        "supportURL": "https://www.commercengine.io/contact-us",
+        "privacyPolicyURL": "https://www.commercengine.io/privacy-policy",
+        "termsOfServiceURL": "https://www.commercengine.io/terms-of-use",
+        "defaultPrompt": [
+          "Which environment are you in, and which stores can you reach?",
+          "Find the Linen Shirt and show me its description.",
+          "Show me the most recent orders."
+        ],
+        "composerIcon": "./assets/icon-512.png",
+        "logo": "./assets/icon-512.png"
+      },
+      "review": {
+        "prompts": [
+          "Which environment are you in, and which stores can you reach?",
+          "Find the Linen Shirt and show me its description.",
+          "Create a category called Accessories under Men.",
+          "Find the WELCOME10 coupon.",
+          "Show me five orders from my store."
+        ],
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Connection context. Setup: a dedicated reviewer account with access to a Sandbox demo store. Start a fresh chat. Pass when the environment and accessible stores agree with the tool result; no switch or write occurs.",
+              "prompt": "Which environment are you in, and which stores can you reach?",
+              "tools_triggered": "ce_state",
+              "expected_behavior": "Call ce_state with no arguments. Report the returned environment and accessible stores without inventing access. If sign-in is required, request authentication rather than claiming success."
+            },
+            {
+              "description": "Product lookup. Setup: in the selected Sandbox demo store, seed one uniquely named Linen Shirt with a known description and refresh its search index before testing. Pass when the answer matches that product's returned description. If multiple stores are accessible, select the demo store in conversation first.",
+              "prompt": "Find the Linen Shirt in my selected store and show me its description.",
+              "tools_triggered": "ce_state, search, get_product",
+              "expected_behavior": "Use a store_id returned by ce_state. Search with type=product and search=Linen Shirt, then call get_product with the exact returned id and the same store_id. Report only returned product information; clarify ambiguous matches and do not claim pricing or inventory quantities from get_product."
+            },
+            {
+              "description": "Category creation. Setup: select a Sandbox demo store containing a unique root category Men and no Accessories child or conflicting accessories slug. Authorize this test creation. Pass when the returned category has the requested name and parent. Reset this fixture before another run; do not run in Live.",
+              "prompt": "In my selected Sandbox store, create a category called Accessories under Men with the slug accessories.",
+              "tools_triggered": "ce_state, search, create_category",
+              "expected_behavior": "Confirm Sandbox via ce_state. Search type=category, search=Men using the selected store_id. Call create_category with name=Accessories, slug=accessories, the returned Men id as parent_category_id, and the same store_id. Follow host approval prompts. Report the returned created category; surface validation errors without claiming it was saved."
+            },
+            {
+              "description": "Coupon lookup. Setup: select a Sandbox demo store with a known coupon code WELCOME10. Pass when the reported coupon details are supported by the matching result and no coupon is changed.",
+              "prompt": "Find the WELCOME10 coupon in my selected store and tell me what it does.",
+              "tools_triggered": "ce_state, search_coupons",
+              "expected_behavior": "Use the selected store_id from ce_state and call search_coupons with search=WELCOME10. Describe the matching coupon using returned fields only. State if none is returned; do not create or update a coupon."
+            },
+            {
+              "description": "Read-only orders. Setup: select a Sandbox demo store with at least five sample orders. Pass when at most five returned orders are summarized, monetary values include their returned currency, and there is no claim about store-wide totals.",
+              "prompt": "Show me five orders from my selected store, including their totals and currencies.",
+              "tools_triggered": "ce_state, search_orders",
+              "expected_behavior": "Call search_orders with the selected store_id from ce_state, page=1 and limit=5. Summarize the returned page with currencies, without inventing missing fields or treating the page as a store-wide aggregate. Do not change orders."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Unsupported order mutation. Setup: fresh chat with no pending supported task. Explain that the connector cannot refund or cancel orders and direct the merchant to the admin app. No order lookup or mutation tool should run; an initial ce_state context check is allowed. Never claim a refund succeeded.",
+              "prompt": "Refund and cancel my latest order."
+            },
+            {
+              "description": "Unsupported customer editing. Setup: fresh chat with no pending supported task. Explain that customer editing is unavailable through this connector. Do not search for a customer or invoke any mutation tool; an initial ce_state context check is allowed. Do not claim the email changed.",
+              "prompt": "Change customer Jane Doe's email address to jane@example.com."
+            },
+            {
+              "description": "Unsupported image generation. Setup: fresh chat with no supplied image file or URL. Explain that the connector can upload existing images but cannot generate one. No media or catalog tool should run; an initial ce_state context check is allowed. Do not fabricate an image or upload result.",
+              "prompt": "Generate a new studio product photo of a linen shirt using Commerce Engine."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Initial connector package for the hosted Commerce Engine MCP server, with OAuth discovery and installation instructions for supported agent clients."
+      }
+    }
+  }
+}

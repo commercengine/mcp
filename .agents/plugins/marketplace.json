@@ -1,0 +1,20 @@
+{
+  "name": "commerce-engine",
+  "interface": {
+    "displayName": "Commerce Engine"
+  },
+  "plugins": [
+    {
+      "name": "commerce-engine",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Business & Operations"
+    }
+  ]
+}

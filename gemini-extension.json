@@ -1,0 +1,10 @@
+{
+  "name": "commerce-engine",
+  "version": "0.1.0",
+  "description": "Manage your Commerce Engine catalog, media, offers and marketplace, and read orders through your own account.",
+  "mcpServers": {
+    "commerce-engine": {
+      "httpUrl": "https://mcp.commercengine.io/mcp"
+    }
+  }
+}

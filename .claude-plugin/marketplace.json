@@ -1,0 +1,14 @@
+{
+  "name": "commerce-engine",
+  "owner": {
+    "name": "Commerce Engine",
+    "email": "support@commercengine.io"
+  },
+  "plugins": [
+    {
+      "name": "commerce-engine",
+      "source": "./"
+    }
+  ],
+  "description": "The hosted Commerce Engine MCP connector."
+}
