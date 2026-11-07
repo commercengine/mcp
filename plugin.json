@@ -27,8 +27,8 @@
         "termsOfServiceURL": "https://www.commercengine.io/terms-of-use",
         "defaultPrompt": [
           "Which environment are you in, and which stores can you reach?",
-          "Find the Linen Shirt and show me its description.",
-          "Show me the most recent orders."
+          "Show me the categories in my store.",
+          "Create a coupon WELCOME10 for 10% off."
         ],
         "composerIcon": "./assets/icon-512.png",
         "logo": "./assets/icon-512.png"
@@ -36,42 +36,42 @@
       "review": {
         "prompts": [
           "Which environment are you in, and which stores can you reach?",
-          "Find the Linen Shirt and show me its description.",
-          "Create a category called Accessories under Men.",
-          "Find the WELCOME10 coupon.",
-          "Show me five orders from my store."
+          "Find the AUREON Nova ANC Headphones and show me their description.",
+          "Show me the categories in my store.",
+          "How much stock does the Wireless Hi-Fi Speaker have?",
+          "Create a coupon REVIEW10 for 10% off."
         ],
         "test_cases": {
           "positive": [
             {
-              "description": "Connection context. Setup: a dedicated reviewer account with access to a Sandbox demo store. Start a fresh chat. Pass when the environment and accessible stores agree with the tool result; no switch or write occurs.",
+              "description": "Connection context. Setup: the reviewer account, which reaches the Little Things demo store in Sandbox. Start a fresh chat. Pass when the environment and accessible stores agree with the tool result; no switch or write occurs.",
               "prompt": "Which environment are you in, and which stores can you reach?",
               "tools_triggered": "ce_state",
               "expected_behavior": "Call ce_state with no arguments. Report the returned environment and accessible stores without inventing access. If sign-in is required, request authentication rather than claiming success."
             },
             {
-              "description": "Product lookup. Setup: in the selected Sandbox demo store, seed one uniquely named Linen Shirt with a known description and refresh its search index before testing. Pass when the answer matches that product's returned description. If multiple stores are accessible, select the demo store in conversation first.",
-              "prompt": "Find the Linen Shirt in my selected store and show me its description.",
+              "description": "Product lookup. Setup: the Little Things demo store in Sandbox, whose catalog includes the AUREON Nova ANC Headphones. Pass when the answer matches the description get_product returns.",
+              "prompt": "Find the AUREON Nova ANC Headphones and show me their description.",
               "tools_triggered": "ce_state, search, get_product",
-              "expected_behavior": "Use a store_id returned by ce_state. Search with type=product and search=Linen Shirt, then call get_product with the exact returned id and the same store_id. Report only returned product information; clarify ambiguous matches and do not claim pricing or inventory quantities from get_product."
+              "expected_behavior": "Use the store_id from ce_state. Search with type=product and search=AUREON Nova ANC Headphones, then call get_product with the returned id and the same store_id. Report only returned product information, and clarify if several products match."
             },
             {
-              "description": "Category creation. Setup: select a Sandbox demo store containing a unique root category Men and no Accessories child or conflicting accessories slug. Authorize this test creation. Pass when the returned category has the requested name and parent. Reset this fixture before another run; do not run in Live.",
-              "prompt": "In my selected Sandbox store, create a category called Accessories under Men with the slug accessories.",
-              "tools_triggered": "ce_state, search, create_category",
-              "expected_behavior": "Confirm Sandbox via ce_state. Search type=category, search=Men using the selected store_id. Call create_category with name=Accessories, slug=accessories, the returned Men id as parent_category_id, and the same store_id. Follow host approval prompts. Report the returned created category; surface validation errors without claiming it was saved."
+              "description": "Category listing. Setup: the Little Things demo store in Sandbox, whose categories are Camera, DJ Equipment and Speakers. Pass when the listed categories match the search result and nothing is changed.",
+              "prompt": "Show me the categories in my store.",
+              "tools_triggered": "ce_state, search",
+              "expected_behavior": "Use the store_id from ce_state and call search with type=category and no search term. List the returned categories by name without inventing any."
             },
             {
-              "description": "Coupon lookup. Setup: select a Sandbox demo store with a known coupon code WELCOME10. Pass when the reported coupon details are supported by the matching result and no coupon is changed.",
-              "prompt": "Find the WELCOME10 coupon in my selected store and tell me what it does.",
-              "tools_triggered": "ce_state, search_coupons",
-              "expected_behavior": "Use the selected store_id from ce_state and call search_coupons with search=WELCOME10. Describe the matching coupon using returned fields only. State if none is returned; do not create or update a coupon."
+              "description": "Inventory lookup. Setup: the Little Things demo store in Sandbox, whose catalog includes the Wireless Hi-Fi Speaker. Pass when the reported stock matches the inventory get_product_inventory returns, per variant and warehouse, and nothing is changed.",
+              "prompt": "How much stock does the Wireless Hi-Fi Speaker have?",
+              "tools_triggered": "ce_state, search, get_product_inventory",
+              "expected_behavior": "Use the store_id from ce_state. Search with type=product and search=Wireless Hi-Fi Speaker, then call get_product_inventory with the returned id. Report stock per variant and warehouse as returned, and do not update inventory."
             },
             {
-              "description": "Read-only orders. Setup: select a Sandbox demo store with at least five sample orders. Pass when at most five returned orders are summarized, monetary values include their returned currency, and there is no claim about store-wide totals.",
-              "prompt": "Show me five orders from my selected store, including their totals and currencies.",
-              "tools_triggered": "ce_state, search_orders",
-              "expected_behavior": "Call search_orders with the selected store_id from ce_state, page=1 and limit=5. Summarize the returned page with currencies, without inventing missing fields or treating the page as a store-wide aggregate. Do not change orders."
+              "description": "Coupon creation. Setup: the Little Things demo store in Sandbox, with no coupon using the code REVIEW10; delete it before a rerun. Coupons don't appear on the demo storefront. Pass when the coupon is created with a 10% discount, or when the connector returns the form's field messages and the agent fixes them or asks for the missing values.",
+              "prompt": "Create a coupon REVIEW10 for 10% off.",
+              "tools_triggered": "ce_state, create_coupon",
+              "expected_behavior": "Confirm Sandbox via ce_state. Call create_coupon with name REVIEW10, coupon_code [REVIEW10], coupon_type discount and a 10% percentage discount, using the store_id from ce_state. Follow the host's approval prompt. Report the created coupon; if the form returns field messages, correct them or ask the merchant, and never claim a coupon was saved when it wasn't."
             }
           ],
           "negative": [
@@ -85,7 +85,7 @@
             },
             {
               "description": "Unsupported image generation. Setup: fresh chat with no supplied image file or URL. Explain that the connector can upload existing images but cannot generate one. No media or catalog tool should run; an initial ce_state context check is allowed. Do not fabricate an image or upload result.",
-              "prompt": "Generate a new studio product photo of a linen shirt using Commerce Engine."
+              "prompt": "Generate a new studio product photo of the Wireless Hi-Fi Speaker using Commerce Engine."
             }
           ]
         }
