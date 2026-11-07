@@ -34,6 +34,8 @@
         "logo": "./assets/icon-512.png"
       },
       "review": {
+        "commerce": false,
+        "commerce_description": "No purchases or payments happen in ChatGPT. The plugin lets a merchant manage their own Commerce Engine store, such as its catalog, coupons and promotions, and read its orders.",
         "prompts": [
           "Which environment are you in, and which stores can you reach?",
           "Find the AUREON Nova ANC Headphones and show me their description.",
