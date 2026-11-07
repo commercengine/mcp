@@ -91,6 +91,7 @@
         }
       },
       "publication": {
+        "countries": ["IN"],
         "release_notes": "Initial connector package for the hosted Commerce Engine MCP server, with OAuth discovery and installation instructions for supported agent clients."
       }
     }
